@@ -28,6 +28,7 @@ Note that this list is subject to change at any time as devices gain better supp
 - [Radxa ROCK 5 ITX](https://radxa.com/products/rock5/5itx/)
 - [Orange Pi 5](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html)
 - [Orange Pi 5 Plus](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5-plus.html)
+- [Orange Pi 5 Ultra](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5-Ultra.html)
 - [Khadas Edge2](https://www.khadas.com/edge2)
 - [BuzzTV P6](https://buzztvglobal.com/products/powerstation-6)
 - [FriendlyELEC NanoPC T6](https://wiki.friendlyelec.com/wiki/index.php/NanoPC-T6)
@@ -206,6 +207,7 @@ In addition to the default paths above, it is possible to specify custom ones vi
 | `rk3588-rock-5-itx`                     | ROCK 5 ITX                    |
 | `rk3588s-orangepi-5`                    | Orange Pi 5                   |
 | `rk3588-orangepi-5-plus`                | Orange Pi 5 Plus              |
+| `rk3588-orangepi-5-ultra` 		  | Orange Pi 5 Ultra 		  |
 | `rk3588s-9tripod-linux`                 | Indiedroid Nova               |
 | `rk3588s-fydetab-duo`                   | Fydetab Duo                   |
 | `rk3588-buzztv-p6`                      | PowerStation 6                |
