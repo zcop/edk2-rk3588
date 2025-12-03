@@ -127,6 +127,12 @@
   INF Silicon/Rockchip/Library/DisplayLib/DwMipiDsi2Lib.inf
   INF Silicon/Rockchip/Drivers/LcdGraphicsOutputDxe/LcdGraphicsOutputDxe.inf
 
+!if $(RK_AMD_GOP_ENABLE) == TRUE
+  INF Drivers/AMD/Gop/AmdGopOpRomOverrideDxe.inf
+  INF Drivers/AMD/Gop/AmdGopPreSoc15Dxe.inf
+  INF Drivers/AMD/Gop/AmdGopPostSoc15Dxe.inf
+!endif
+
   #
   # USB Support
   #
@@ -221,6 +227,13 @@
   # EFI Memory Attribute Protocol state manager (rhboot shim workaround)
   #
   INF EmbeddedPkg/Drivers/MemoryAttributeManagerDxe/MemoryAttributeManagerDxe.inf
+
+  #
+  # x64 Binary Compatibility Support
+  #
+!if $(RK_X86_EMULATOR_ENABLE) == TRUE
+  INF Emulator/X86EmulatorDxe/X86EmulatorDxe.inf
+!endif
 
   #
   # Bds
