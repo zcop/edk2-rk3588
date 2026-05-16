@@ -1,7 +1,6 @@
 /** @file
   PCI Segment Library for Rockchip RK356x
 
-  Copyright (c) 2023-2025, Mario Bălănică <mariobalanica02@gmail.com>
   Copyright (c) 2023, Molly Sophia <mollysophia379@gmail.com>
   Copyright (c) 2021, Jared McNeill <jmcneill@invisible.ca>
   Copyright (c) 2007 - 2012, Intel Corporation. All rights reserved.<BR>
@@ -37,8 +36,6 @@ typedef enum {
 #define ASSERT_INVALID_PCI_SEGMENT_ADDRESS(A, M) \
   ASSERT (((A) & (0xffff0000f0000000ULL | (M))) == 0)
 
-#define INVALID_PCI_ADDRESS  0xffffffff
-
 #define GET_SEG_NUM(Address)   ((Address >> 32) & 0xFFFF)
 #define GET_BUS_NUM(Address)   ((Address >> 20) & 0xFF)
 #define GET_DEV_NUM(Address)   ((Address >> 15) & 0x1F)
@@ -51,42 +48,31 @@ PciSegmentLibGetConfigBase (
   IN  UINT64  Address
   )
 {
-  UINT64  Base;
   UINT16  Segment;
   UINT8   Bus;
-  UINT8   Device;
-  UINT8   Function;
+  UINT16  Device;
 
-  Segment  = GET_SEG_NUM (Address);
-  Bus      = GET_BUS_NUM (Address);
-  Device   = GET_DEV_NUM (Address);
-  Function = GET_FUNC_NUM (Address);
+  Segment = GET_SEG_NUM (Address);
+  Bus     = GET_BUS_NUM (Address);
+  Device  = GET_DEV_NUM (Address);
 
-  if (Segment >= NUM_PCIE_CONTROLLER) {
-    ASSERT (FALSE);
-    return INVALID_PCI_ADDRESS;
+  ASSERT (Segment < NUM_PCIE_CONTROLLER);
+
+  // DEBUG ((DEBUG_ERROR, "PciSegmentLibGetConfigBase: Address=0x%lX, Bus=%d, Segment=%d\n",
+  //         Address, Bus, Segment));
+
+  // Ignore more than one device on bus 0 and 1 to hide duplicates/ghosts.
+  if ((Device > 0) && ((Bus == 0) || (Bus == 1))) {
+    return 0xffffffff;
   }
 
-  //
-  // The primary bus can only contain a single function (the root port).
-  // The secondary bus can only contain a single device.
-  //
-  if (((Bus == PCIE_BUS_BASE (Segment)) && (Device + Function > 0)) ||
-      ((Bus == PCIE_BUS_BASE (Segment) + 1) && (Device > 0)))
-  {
-    return INVALID_PCI_ADDRESS;
+  // The root port is not part of the main config space.
+  if (Bus == 0) {
+    return PCIE_DBI_BASE (Segment);
   }
 
-  if (Bus == PCIE_BUS_BASE (Segment)) {
-    // The root port is not part of the main config space.
-    Base     = PCIE_DBI_BASE (Segment);
-    Address -= PCIE_BUS_BASE_OFFSET (Segment);
-  } else {
-    // Here starts the almost-compliant ECAM space.
-    Base = PCIE_CFG_BASE (Segment);
-  }
-
-  return Base + (UINT32)Address;
+  // Here starts the not-quite-compliant ECAM space.
+  return PCIE_CFG_BASE (Segment);
 }
 
 /**
@@ -109,17 +95,21 @@ PciSegmentLibReadWorker (
   UINT64  Base;
 
   Base = PciSegmentLibGetConfigBase (Address);
-  if (Base == INVALID_PCI_ADDRESS) {
+
+  if (Base == 0xFFFFFFFF) {
     return Base;
   }
 
+  // DEBUG ((DEBUG_ERROR, "PciSegmentLibReadWorker: Address=0x%lX, Base=0x%lX, Width=%u\n",
+  //         Address, Base, Width));
+
   switch (Width) {
     case PciCfgWidthUint8:
-      return MmioRead8 (Base);
+      return MmioRead8 (Base + (UINT32)Address);
     case PciCfgWidthUint16:
-      return MmioRead16 (Base);
+      return MmioRead16 (Base + (UINT32)Address);
     case PciCfgWidthUint32:
-      return MmioRead32 (Base);
+      return MmioRead32 (Base + (UINT32)Address);
     default:
       ASSERT (FALSE);
   }
@@ -149,19 +139,23 @@ PciSegmentLibWriteWorker (
   UINT64  Base;
 
   Base = PciSegmentLibGetConfigBase (Address);
-  if (Base == INVALID_PCI_ADDRESS) {
+
+  if (Base == 0xFFFFFFFF) {
     return Base;
   }
 
+  // DEBUG ((DEBUG_ERROR, "PciSegmentLibWriteWorker: Address=0x%lX, Base=0x%lX, Width=%u\n",
+  //       Address, Base, Width));
+
   switch (Width) {
     case PciCfgWidthUint8:
-      MmioWrite8 (Base, Data);
+      MmioWrite8 (Base + (UINT32)Address, Data);
       break;
     case PciCfgWidthUint16:
-      MmioWrite16 (Base, Data);
+      MmioWrite16 (Base + (UINT32)Address, Data);
       break;
     case PciCfgWidthUint32:
-      MmioWrite32 (Base, Data);
+      MmioWrite32 (Base + (UINT32)Address, Data);
       break;
     default:
       ASSERT (FALSE);
