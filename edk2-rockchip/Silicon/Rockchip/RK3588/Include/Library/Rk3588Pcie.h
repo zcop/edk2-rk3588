@@ -79,7 +79,7 @@ PciePinmuxInit (
 // Requester IDs, we need to space segments by <PCIE_BUS_COUNT> bus numbers.
 // It doesn't seem possible to encode the segment number instead.
 //
-#define PCIE_BUS_COUNT                 (PCIE_CFG_SIZE / SIZE_1MB / NUM_PCIE_CONTROLLER)
+#define PCIE_BUS_COUNT                 16
 #define PCIE_BUS_BASE(Segment)         (Segment * PCIE_BUS_COUNT)
 #define PCIE_BUS_LIMIT(Segment)        (PCIE_BUS_BASE (Segment) + PCIE_BUS_COUNT - 1)
 #define PCIE_BUS_BASE_OFFSET(Segment)  (PCIE_BUS_BASE (Segment) * SIZE_1MB)
