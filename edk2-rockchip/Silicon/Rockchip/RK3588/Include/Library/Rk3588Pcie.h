@@ -53,26 +53,20 @@ PciePinmuxInit (
 //
 // Software mapping
 //
-// Since the MMIO32 space is absurdly small, we only use it for I/O.
-// ECAM and MEM32 go at the top of the MMIO64 space. This preserves
-// the MEM64 alignment and allows EDK2 to allocate up to a single
-// large 512 MB BAR + remaining space until the ECAM base.
+// MEM32 uses the remaining MMIO32 space after I/O (direct mapping, no
+// translation needed). This gives ~14 MB per segment which is sufficient
+// for most devices. The translated-to-MMIO64 approach was found to break
+// devices like RTL8125BG whose Linux drivers don't re-establish the
+// iATU MEM translation window.
 //
-#define PCIE_MEM32_SIZE           SIZE_128MB
-#define PCIE_MEM32_BASE(Segment)  (PCIE_MMIO64_BASE (Segment) + PCIE_MMIO64_SIZE - PCIE_MEM32_SIZE)
-//
-// Likely not an issue here, but let's play it safe and ensure the bus
-// address does not overlap inbound system RAM, since I've seen DMA
-// corruption on a different IP due to this.
-//
-#define PCIE_MEM32_BUS_BASE              PCIE_MMIO32_BASE (0)
-#define PCIE_MEM32_TRANSLATION(Segment)  (PCIE_MEM32_BASE (Segment) - PCIE_MEM32_BUS_BASE)
+#define PCIE_MEM32_SIZE           (PCIE_MMIO32_SIZE - SIZE_2MB)
+#define PCIE_MEM32_BASE(Segment)  (PCIE_MMIO32_BASE (Segment) + SIZE_2MB)
 
 // ECAM must start on a 256 MB boundary (28-bit B/D/F addressing).
-#define PCIE_CFG_SIZE           (SIZE_256MB - PCIE_MEM32_SIZE)
+#define PCIE_CFG_SIZE           SIZE_128MB
 #define PCIE_CFG_BASE(Segment)  (PCIE_MMIO64_BASE (Segment) + PCIE_MMIO64_SIZE - SIZE_256MB)
 
-#define PCIE_MEM64_SIZE           (PCIE_MMIO64_SIZE - PCIE_MEM32_SIZE - PCIE_CFG_SIZE)
+#define PCIE_MEM64_SIZE           (PCIE_MMIO64_SIZE - SIZE_256MB)
 #define PCIE_MEM64_BASE(Segment)  PCIE_MMIO64_BASE (Segment)
 
 #define PCIE_IO_SIZE                  SIZE_64KB

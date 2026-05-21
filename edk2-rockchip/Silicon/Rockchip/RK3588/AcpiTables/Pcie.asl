@@ -34,7 +34,7 @@
     Method (_CRS, 0, Serialized) {                                             \
       Name (RBUF, ResourceTemplate () {                                        \
         WORDBUSNUMBER_BUF (00, ResourceProducer)                               \
-        QWORDMEMORY_BUF (01, ResourceProducer)                                 \
+        DWORDMEMORY_BUF (01, ResourceProducer)                                 \
         QWORDMEMORY_BUF (02, ResourceProducer)                                 \
         QWORDIO_BUF (03, ResourceProducer)                                     \
       })                                                                       \
@@ -44,11 +44,11 @@
         PBMA - PBMI + 1,                                                       \
         0                                                                      \
       )                                                                        \
-      QWORD_SET (                                                              \
+      DWORD_SET (                                                              \
         01,                                                                    \
-        PCIE_MEM32_BUS_BASE,                                                   \
+        PCIE_MEM32_BASE (Segment),                                             \
         PCIE_MEM32_SIZE,                                                       \
-        PCIE_MEM32_TRANSLATION (Segment)                                       \
+        0                                                                      \
       )                                                                        \
       QWORD_SET (                                                              \
         02,                                                                    \

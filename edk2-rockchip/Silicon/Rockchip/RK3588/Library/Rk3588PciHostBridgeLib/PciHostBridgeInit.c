@@ -666,14 +666,6 @@ InitializePciHost (
     PCIE_IO_BUS_BASE,
     PCIE_IO_SIZE
     );
-  PciSetupAtu (
-    DbiBase,
-    3,
-    IATU_TYPE_MEM,
-    PCIE_MEM32_BASE (Segment),
-    PCIE_MEM32_BUS_BASE,
-    PCIE_MEM32_SIZE
-    );
 
   DEBUG ((DEBUG_INIT, "PCIe: Set link speed\n"));
   PciSetupLinkSpeed (DbiBase, LinkSpeed, LinkWidth);

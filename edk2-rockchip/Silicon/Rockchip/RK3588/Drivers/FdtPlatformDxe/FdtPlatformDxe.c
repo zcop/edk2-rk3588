@@ -329,11 +329,11 @@ FdtFixupPcieResources (
       },
       {
         CpuToFdt32 (0x02000000), // 32-bit non-prefetchable memory
-        CpuToFdt32 ((UINT32)((UINT64)PCIE_MEM32_BUS_BASE >> 32)),
-        CpuToFdt32 ((UINT32)(PCIE_MEM32_BUS_BASE)),
-        CpuToFdt32 ((UINT32)((UINT64)PCIE_MEM32_BASE (Segment) >> 32)),
+        CpuToFdt32 (0),
         CpuToFdt32 ((UINT32)(PCIE_MEM32_BASE (Segment))),
-        CpuToFdt32 ((UINT32)((UINT64)PCIE_MEM32_SIZE >> 32)),
+        CpuToFdt32 (0),
+        CpuToFdt32 ((UINT32)(PCIE_MEM32_BASE (Segment))),
+        CpuToFdt32 (0),
         CpuToFdt32 ((UINT32)(PCIE_MEM32_SIZE))
       },
       {

@@ -200,9 +200,8 @@ PciHostBridgeGetRootBridges (
     mPciRootBridges[Loop].Io.Limit       = mPciRootBridges[Loop].Io.Base + PCIE_IO_SIZE - 1;
     mPciRootBridges[Loop].Io.Translation = MAX_UINT64 - PCIE_IO_TRANSLATION (Idx) + 1;
 
-    mPciRootBridges[Loop].Mem.Base        = PCIE_MEM32_BUS_BASE;
-    mPciRootBridges[Loop].Mem.Limit       = mPciRootBridges[Loop].Mem.Base + PCIE_MEM32_SIZE - 1;
-    mPciRootBridges[Loop].Mem.Translation = MAX_UINT64 - PCIE_MEM32_TRANSLATION (Idx) + 1;
+    mPciRootBridges[Loop].Mem.Base  = PCIE_MEM32_BASE (Idx);
+    mPciRootBridges[Loop].Mem.Limit = mPciRootBridges[Loop].Mem.Base + PCIE_MEM32_SIZE - 1;
 
     mPciRootBridges[Loop].MemAbove4G.Base  = PCIE_MEM64_BASE (Idx);
     mPciRootBridges[Loop].MemAbove4G.Limit = mPciRootBridges[Loop].MemAbove4G.Base + PCIE_MEM64_SIZE - 1;
